@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+    --font-montserrat: "Montserrat", sans-serif;
+    --font-poppins: "Poppins", sans-serif;
+
+    --color-bg: var(--bg);
+    --color-surface: var(--surface);
+    --color-border: var(--border);
+    --color-text: var(--text);
+    --color-main-text: var(--main-text);
+    --color-muted: var(--muted);
+    --color-accent: var(--accent);
+    --color-danger: #ef4444;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+
+    --shadow-dynamic: 0 10px 15px -3px color-mix(in srgb, var(--bg) 40%, black), 
+                    0 4px 6px -4px color-mix(in srgb, var(--bg) 40%, black);
+  --shadow-border: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+
+  --shadow-ambient: 0 8px 20px -6px color-mix(in srgb, var(--bg) 30%, black);
+  --shadow-directional: 0 2px 4px -2px color-mix(in srgb, var(--bg) 40%, black);
+  --shadow-edge: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+
+  --shadow-sm: var(--shadow-directional);
+  --shadow-md: var(--shadow-ambient), var(--shadow-directional);
+  --shadow-lg: 0 20px 25px -5px color-mix(in srgb, var(--bg) 30%, black),
+              0 10px 10px -5px color-mix(in srgb, var(--bg) 40%, black);
+  --shadow-xl: 0 25px 50px -12px color-mix(in srgb, var(--bg) 25%, black),
+              0 8px 15px -6px color-mix(in srgb, var(--bg) 35%, black);
+
+  --shadow-elevated-sm: var(--shadow-edge), var(--shadow-sm);
+  --shadow-elevated-md: var(--shadow-edge), var(--shadow-md);
+  --shadow-elevated-lg: var(--shadow-edge), var(--shadow-lg);
+  --shadow-elevated-xl: var(--shadow-edge), var(--shadow-xl);
+}
+
+:root {
+  font-family: var(--font-poppins);
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* DEFAULT: Dark Mode — True deep navy, not just dark gray */
+  --bg: #050914;          /* near-black with a definite blue tone */
+  --surface: #0d1424;     /* rich navy surface */
+  --border: #1a2540;      /* visible but not harsh navy border */
+  --text: #c8d6f0;        /* cool blue-tinted off-white */
+  --main-text: #eef2ff;   /* bright blue-white for headings */
+  --muted: #5a7299;       /* muted steel blue */
+  --accent: #4F8EF7;      /* royal blue */
+}
+
+/* LIGHT MODE — Crisp academic white with cool-tinted surfaces */
+[data-theme='Dark Mode'] {
+  --bg: #050914;          /* near-black with a definite blue tone */
+  --surface: #0d1424;     /* rich navy surface */
+  --border: #1a2540;      /* visible but not harsh navy border */
+  --text: #c8d6f0;        /* cool blue-tinted off-white */
+  --main-text: #eef2ff;   /* bright blue-white for headings */
+  --muted: #5a7299;       /* muted steel blue */
+  --accent: #4F8EF7;
+}
+
+[data-theme='Light Mode'] {
+  --bg: #f0f4f8;          /* cool blue-gray background, NOT plain white */
+  --surface: #ffffff;     /* pure white cards stand out from bg */
+  --border: #c9d6e3;      /* noticeably cool blue-gray border */
+  --text: #2d3f55;        /* deep slate-blue body text */
+  --main-text: #0f1f33;   /* near-black navy for headings */
+  --muted: #7a94b0;       /* steel blue muted text */
+  --accent: #2563EB;      /* strong academic blue */
+}
+
+/* BALANCED — Deep forest green-charcoal, grounded and unique */
+[data-theme='Balanced'] {
+  --bg: #1c1917;        /* warm dark gray */
+  --surface: #292524;
+  --border: #3b3b3b;
+  --text: #e7e5e4;
+  --main-text: #fafaf9;
+  --muted: #a8a29e;
+  --accent: #10b981;      /* bright mint green accent */
+}
+
+/* WARM GRAY — Rich parchment/cream, editorial and warm */
+[data-theme='Warm Gray'] {
+  --bg: #f2ebe0;          /* warm parchment, clearly different from Light Mode */
+  --surface: #fdf8f0;     /* cream card surface */
+  --border: #d6c9b5;      /* warm tan border, visible contrast */
+  --text: #4a3b2c;        /* deep espresso brown body text */
+  --main-text: #251d12;   /* near-black warm brown for headings */
+  --muted: #9e8875;       /* warm tan muted text */
+  --accent: #B45309;      /* ochre gold accent */
+}
+
+/* BLUE GRAY — Cold steel, technical and analytical */
+[data-theme='Blue Gray'] {
+  --bg: #0b1520;          /* deep cold steel-blue, cooler than Dark Mode */
+  --surface: #132030;     /* cold blue-gray surface */
+  --border: #1e3448;      /* steel blue border */
+  --text: #9ab8d4;        /* cool light steel text */
+  --main-text: #ddeeff;   /* icy blue-white headings */
+  --muted: #4a7296;       /* muted steel blue */
+  --accent: #0EA5C9;      /* cerulean — noticeably different from Dark Mode's royal blue */
+}
+
+/* VIBRANT — Deep amethyst/plum, luxurious and electric */
+[data-theme='Vibrant'] {
+  --bg: #0b1120;          /* deep navy, professional and modern */
+  --surface: #1a2236;     /* rich slate with subtle warmth */
+  --border: #2a3448;      /* muted blue-gray, clear definition */
+  --text: #cbd5e6;        /* soft off-white for body text, high readability */
+  --main-text: #f1f5f9;   /* bright near-white for headings */
+  --muted: #6c7c9e;       /* calm blue-gray for secondary elements */
+  --accent: #38bdf8;      /* vibrant sky blue, energetic yet professional */
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--accent);
+  color: var(--bg);
+}
+
+.shadow-custom {
+  box-shadow: var(--shadow-dynamic);
+}
+
+.shadow-elevated {
+  box-shadow: var(--shadow-border), var(--shadow-dynamic);
+}
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+
+.shadow-elevated-sm { box-shadow: var(--shadow-elevated-sm); }
+.shadow-elevated-md { box-shadow: var(--shadow-elevated-md); }
+.shadow-elevated-lg { box-shadow: var(--shadow-elevated-lg); }
+.shadow-elevated-xl { box-shadow: var(--shadow-elevated-xl); }
