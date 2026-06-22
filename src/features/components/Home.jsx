@@ -1,12 +1,20 @@
+import { useState } from "react";
 import { HeaderNav } from "./nav/HeaderNav";
+import { SideNav } from "./nav/SideNav";
+import { FileWriter } from "./Files/FileWriter";
 
 
 export const Home = () => {
+    const [showSidePanel, setShowSidePanel] = useState(true);
 
 
     return(
         <div className="flex flex-col">
-            <HeaderNav />
+            <HeaderNav setShowSidePanel={setShowSidePanel} />
+            <div className="flex flex-row gap-2">
+                <SideNav showSidePanel={showSidePanel} setShowSidePanel={setShowSidePanel}/>
+                <FileWriter />
+            </div>
         </div>
     );
 }

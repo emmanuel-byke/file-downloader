@@ -1,11 +1,11 @@
 import { Menu, Pause, Play, Plus, Settings } from "lucide-react";
 
-export const HeaderNav = () => {
+export const HeaderNav = ({setShowSidePanel}) => {
   return (
     <nav className="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 shadow-sm rounded-xl border border-gray-100 dark:border-gray-800">
       {/* Left side – Menu */}
       <div>
-        <NavCustomButton icon={Menu} aria-label="Open menu" />
+        <NavCustomButton icon={Menu} aria-label="Open menu" onClick={()=>setShowSidePanel(prev=>!prev)} />
       </div>
 
       {/* Center – Action buttons */}
