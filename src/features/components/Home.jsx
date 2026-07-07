@@ -3,22 +3,41 @@ import { HeaderNav } from "./nav/HeaderNav";
 import { SideNav } from "./nav/SideNav";
 import { FileWriter } from "./Files/FileWriter";
 
-
 export const Home = () => {
-    const [showSidePanel, setShowSidePanel] = useState(true);
+  const [showSidePanel, setShowSidePanel] = useState(true);
+  console.log('Hello');
 
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Fixed Header */}
+      <HeaderNav setShowSidePanel={setShowSidePanel} />
 
-    return(
-        <div className="flex flex-col">
-            <HeaderNav setShowSidePanel={setShowSidePanel} />
-            <div className="flex flex-row gap-2">
-                <SideNav showSidePanel={showSidePanel} setShowSidePanel={setShowSidePanel}/>
-                <FileWriter />
-            </div>
+      {/* Main Layout: Sidebar + Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar with smooth width transition */}
+        <div
+          className={`
+            transition-all duration-300 ease-in-out shrink-0
+            ${showSidePanel ? 'w-64' : 'w-0'}
+            overflow-hidden
+          `}
+        >
+          <SideNav
+            showSidePanel={showSidePanel}
+            setShowSidePanel={setShowSidePanel}
+          />
         </div>
-    );
-}
 
+        {/* Main content – fills remaining space */}
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+          <div className="max-w-6xl mx-auto">
+            <FileWriter />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
 
 
 

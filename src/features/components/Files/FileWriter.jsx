@@ -1,6 +1,10 @@
-import { File, Pause, Trash2, X } from "lucide-react";
+import { File, Pause, Play, Trash2, X } from "lucide-react";
+import { attributes, properties } from "./properties";
 
 export const FileWriter = () => {
+  const attr = attributes();
+  const prop = properties();
+
   const Icon = getIcon();
   const progress = 40;
   const fileName = getFileName();
@@ -9,7 +13,7 @@ export const FileWriter = () => {
   const speed = "06.50 MB/s";
 
   return (
-    <div className="max-w-md w-full bg-white rounded-xl shadow-md border border-gray-200 p-5 space-y-4 transition-shadow hover:shadow-lg">
+    <div className="max-w-lg w-full bg-white rounded-xl shadow-md border border-gray-200 p-5 space-y-4 transition-shadow hover:shadow-lg">
       {/* Header: Icon, file name, progress percentage, and action buttons */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -19,13 +23,22 @@ export const FileWriter = () => {
           <p className="text-sm font-medium text-gray-800 truncate">{fileName}</p>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-sm font-semibold text-gray-700 mr-1">{progress}%</span>
-          <button
-            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-            aria-label="Pause download"
-          >
-            <Pause className="w-4 h-4 text-gray-600" />
-          </button>
+          {
+            (attr.state.id===1||attr.state.id===2) && <span className="text-sm font-semibold text-gray-700 mr-1">{progress}%</span>
+          }
+          {
+            (attr.state.id===1||attr.state.id===2) &&
+            <button
+              className="p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+              aria-label="Pause download"
+              onClick={()=>attr.setState(prev=> prev.id===1?{name: 'paused', id:2}:{name: 'running', id:1})}
+            >
+              {
+                attr.state.id===1?<Pause className="w-4 h-4 text-gray-600" /> : <Play className="w-4 h-4 text-gray-600" />
+              }
+            </button>
+          }
+          
           <button
             className="p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
             aria-label="Delete file"
@@ -42,19 +55,30 @@ export const FileWriter = () => {
       </div>
 
       {/* Progress bar with gradient and smooth transition */}
-      <ProgressBar progress={progress} />
-
+      {
+        (attr.state.id===1||attr.state.id===2) && <ProgressBar progress={progress} />
+      }
+      
       {/* Statistics: file size, time remaining, and speed */}
       <div className="flex items-center justify-between gap-2 text-xs font-medium text-gray-600">
-        <div className="px-3 py-1 bg-gray-100 rounded-full whitespace-nowrap">
-          {fileSize}
-        </div>
-        <div className="px-3 py-1 bg-gray-100 rounded-full whitespace-nowrap">
-          {timeLeft}
-        </div>
-        <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full whitespace-nowrap font-semibold">
-          {speed}
-        </div>
+        {
+          (attr.state.id===1||attr.state.id===2) && 
+          <div className="px-3 py-1 bg-gray-100 rounded-full whitespace-nowrap">
+            {fileSize}
+          </div>
+        }
+        {
+          attr.state.id===1 && 
+          <div className="px-3 py-1 bg-gray-100 rounded-full whitespace-nowrap">
+            {timeLeft}
+          </div>
+        }
+        {
+          attr.state.id===1 && 
+          <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full whitespace-nowrap font-semibold">
+            {speed}
+          </div>
+        }
       </div>
     </div>
   );

@@ -1,49 +1,102 @@
 import { Menu, Pause, Play, Plus, Settings } from "lucide-react";
+import { useAddURLDialog } from "../../../context/hooks/useAddURLDialog";
 
-export const HeaderNav = ({setShowSidePanel}) => {
+export const HeaderNav = ({ setShowSidePanel }) => {
+  const { openURLDialog } = useAddURLDialog();
+
   return (
-    <nav className="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 shadow-sm rounded-xl border border-gray-100 dark:border-gray-800">
-      {/* Left side – Menu */}
-      <div>
-        <NavCustomButton icon={Menu} aria-label="Open menu" onClick={()=>setShowSidePanel(prev=>!prev)} />
-      </div>
+    <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/70 dark:border-gray-700/70">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Left – Menu toggle */}
+          <div className="flex items-center">
+            <NavCustomButton
+              icon={Menu}
+              aria-label="Toggle sidebar"
+              onClick={() => setShowSidePanel((prev) => !prev)}
+              tooltip="Toggle sidebar"
+            />
+          </div>
 
-      {/* Center – Action buttons */}
-      <div className="flex items-center gap-2">
-        <NavCustomButton name="Add URL" icon={Plus} />
-        <NavCustomButton name="Pause All" icon={Pause} />
-        <NavCustomButton name="Resume All" icon={Play} />
-      </div>
+          {/* Center – Action buttons */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <NavCustomButton
+              name="Add URL"
+              icon={Plus}
+              onClick={openURLDialog}
+              primary
+            />
+            <NavCustomButton name="Pause All" icon={Pause} />
+            <NavCustomButton name="Resume All" icon={Play} />
+          </div>
 
-      {/* Right side – Settings */}
-      <div>
-        <NavCustomButton name="Settings" icon={Settings} />
+          {/* Right – Settings */}
+          <div className="flex items-center">
+            <NavCustomButton
+              name="Settings"
+              icon={Settings}
+              aria-label="Open settings"
+            />
+          </div>
+        </div>
       </div>
-    </nav>
+    </header>
   );
 };
 
 /**
- * A reusable navigation button with an icon and optional label.
- * Handles hover, active, and focus states for a polished feel.
+ * A polished, reusable navigation button with icon, optional label, and tooltip.
+ * Supports primary variant for call-to-action.
  */
-const NavCustomButton = ({ name, icon, ...props }) => {
-  const Icon = icon; // Capitalize for JSX usage
-
+const NavCustomButton = ({
+  name,
+  icon: Icon,
+  primary = false,
+  tooltip,
+  className = '',
+  ...props
+}) => {
   return (
     <button
       className={`
-        flex flex-col items-center gap-2 px-3 py-2 text-sm font-medium
-        text-gray-700 dark:text-gray-200
-        rounded-lg transition-all duration-200 ease-in-out
-        hover:bg-gray-100 dark:hover:bg-gray-800
-        hover:scale-105 active:scale-95
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900
+        relative group inline-flex flex-col items-center justify-center
+        px-3 py-1.5 rounded-xl
+        text-sm font-medium
+        transition-all duration-200 ease-out
+        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+        dark:focus:ring-offset-gray-900
+        ${
+          primary
+            ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:shadow-md active:bg-blue-800'
+            : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100/70 dark:hover:bg-gray-800/50'
+        }
+        ${className}
       `}
       {...props}
     >
-      <Icon className="w-7 h-7" />
-      <p className="text-sm">{name && <span>{name}</span>}</p>
+      <Icon
+        className={`
+          w-6 h-6 transition-transform duration-200
+          ${primary ? 'text-white' : 'text-current'}
+          group-hover:scale-110
+        `}
+      />
+      {name && (
+        <span
+          className={`
+            mt-0.5 text-[11px] leading-none font-medium
+            ${primary ? 'text-white/90' : 'text-gray-500 dark:text-gray-400'}
+          `}
+        >
+          {name}
+        </span>
+      )}
+      {/* Tooltip fallback for icon-only buttons */}
+      {!name && tooltip && (
+        <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+          {tooltip}
+        </span>
+      )}
     </button>
   );
 };
