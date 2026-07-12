@@ -2,6 +2,7 @@ import { useState } from "react";
 import { HeaderNav } from "./nav/HeaderNav";
 import { SideNav } from "./nav/SideNav";
 import { FileWriter } from "./Files/FileWriter";
+import { TestCard } from "./TestCard";
 
 export const Home = () => {
   const [showSidePanel, setShowSidePanel] = useState(true);
@@ -31,8 +32,14 @@ export const Home = () => {
         {/* Main content – fills remaining space */}
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">
           <div className="max-w-6xl mx-auto">
+            <TestCard />
+          </div>
+
+          <div className="max-w-6xl mx-auto">
             <FileWriter />
           </div>
+
+
         </main>
       </div>
     </div>
