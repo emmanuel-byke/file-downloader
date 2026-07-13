@@ -6,34 +6,42 @@ export const FileManagerContext = createContext(null);
 
 export default function FileManagerProvider({ children }) {
   const [settings, setSettings] = useState({
-    name: "Emmanuel"
+    name: "Settings"
   });
+
+    // `yt-dlp -N 8 --downloader aria2c --downloader-args "aria2c:-x 16 -s 16 -k 1M" "${url}"`;
+  const [commandOptions, setCommandOptions] = useState({
+    name: "CommandOptions",
+    base: "yt-dlp", engine: "aria2c", connections: 8
+  });
+
 
   useEffect(()=>{
     const init = async() => {
-      await loadSettings();
+      const output1 = await loadJSON("CommandOptions");
+      if (output1 && Object.keys(output1).length > 0) setCommandOptions(output1);
     }
     init();
   }, []);
 
-  async function changeSettings(newSettings) {
-    setSettings(newSettings);
-    await invoke("save_settings", {
-      settings: newSettings,
+  async function changeJSON(input) {
+    const name = input.name;
+    await invoke("save_json_file", {
+      input, name
     });
+    if(name==="CommandOptions") setCommandOptions(input);
   }
 
-  async function loadSettings() {
-    const output = await invoke("load_settings");
-    if (output && Object.keys(output).length > 0) {
-      setSettings(output);
-    }
+  async function loadJSON(name) {
+    return await invoke("load_json_file", {
+      name
+    });
   }
 
   return (
     <FileManagerContext.Provider
         value={{
-          changeSettings, settings
+          changeJSON, settings, commandOptions, setCommandOptions
       }}
     >
       {children}

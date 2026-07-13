@@ -1,14 +1,15 @@
 import { invoke } from "@tauri-apps/api/core";
 
 import { File, Pause, Play, Trash2, X } from "lucide-react";
-import { useState } from "react";
-import { mainCommand } from "../../context/commands";
-import { useFileManagerData } from "../../context/hooks/use";
+import { useEffect, useState } from "react";
+import { useDownloadData, useFileManagerData } from "../../context/hooks/use";
+import { buildURLCommand } from "../../logic/commandBuilder";
 
 export const TestCard = () => {
     
     const [textInput, setTextInput] = useState("");
-    const { changeSettings, settings } = useFileManagerData();
+    const { settings, commandOptions } = useFileManagerData();
+    const { fileInfo, getFileInfo, downloadVideo, progress, error } = useDownloadData();
     const [text, setText] = useState("Init...");
 
     const submit = async() => {
@@ -17,27 +18,41 @@ export const TestCard = () => {
         // handleRun();
 
         // setText(settings.name||"Hello");
-
-        await changeSettings ({
-            name: "Galaxy S23"
-        });
-    }
-
-    const handleRun = async() => {
         try {
-            const result = await invoke("simple_command", { command: mainCommand(textInput) });
-            setText(result);
+          await getFileInfo(textInput);
+          await downloadVideo(textInput);
         } catch (err) {
-            setText(`Error: ${err}`);
+          // already captured in `error` from context; nothing else to do here
         }
+
     }
+
+    // const handleRun = async() => {
+    //     try {
+    //         const result = await invoke("simple_command", { command: mainCommand(textInput) });
+    //         setText(result);
+    //     } catch (err) {
+    //         setText(`Error: ${err}`);
+    //     }
+    // }
 
   return (
     <div className="max-w-lg w-full bg-white rounded-xl shadow-md border border-gray-200 p-5 space-y-4 transition-shadow hover:shadow-lg">
       
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <p className="text-md font-medium text-gray-800 truncate">{settings.name}</p>
+          {
+            fileInfo && 
+            <p className="text-md font-medium text-gray-800 ">
+              {fileInfo.title} — {fileInfo.filesize_approx} bytes
+            </p>
+          }
+          {
+            progress && 
+            <p className="text-md font-medium text-gray-800 ">
+              {progress.percent}% — {progress.speed} — ETA {progress.eta}
+            </p>
+          }
         </div>
       </div>
 
@@ -53,6 +68,8 @@ export const TestCard = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
           />
         </div>
+
+        {error && <p className="text-sm text-red-600">{error}</p>}
 
       
       <div className="flex items-center justify-between gap-2 text-xs font-medium text-gray-600">
