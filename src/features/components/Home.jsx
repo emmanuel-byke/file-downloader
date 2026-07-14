@@ -40,18 +40,16 @@ export const Home = () => {
           {/* <div className="max-w-6xl mx-auto">
             <TestCard />
           </div> */}
-
           {
-            // urlQueue.map((details, indx)=>(
-            //   <div className="max-w-6xl mx-auto">
-            //     <FileWriter />
-            //   </div>
-            // ))
+            Object.entries(urlQueue).map(([url, fileDetail])=>(
+              <div key={url} className="max-w-6xl mx-auto">
+                <FileWriter url={url} fileDetail={fileDetail} />
+              </div>
+            ))
           }
-
-          <div className="max-w-6xl mx-auto">
+          {/* <div className="max-w-6xl mx-auto">
             <FileWriter />
-          </div>
+          </div> */}
 
 
         </main>

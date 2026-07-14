@@ -1,6 +1,7 @@
 import { Menu, Pause, Play, Plus, Settings } from "lucide-react";
 import { useAddURLDialog } from "../../../context/hooks/useAddURLDialog";
 import { useDownloadData } from "../../../context/hooks/use";
+import { AddUrlBtn } from "../../cards/AddUrlBtn";
 
 export const HeaderNav = ({ setShowSidePanel }) => {
   const { openURLDialog } = useAddURLDialog();
@@ -13,7 +14,7 @@ export const HeaderNav = ({ setShowSidePanel }) => {
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/70 dark:border-gray-700/70">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-w-xl mx-auto px-4 ">
         <div className="flex items-center justify-between h-16">
           {/* Left – Menu toggle */}
           <div className="flex items-center">
@@ -27,12 +28,7 @@ export const HeaderNav = ({ setShowSidePanel }) => {
 
           {/* Center – Action buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <NavCustomButton
-              name="Add URL"
-              icon={Plus}
-              onClick={openURLDialog}
-              primary
-            />
+            <AddUrlBtn />
             <NavCustomButton name="Pause All" icon={Pause} onClick={btnClicked} />
             <NavCustomButton name="Resume All" icon={Play} />
           </div>
