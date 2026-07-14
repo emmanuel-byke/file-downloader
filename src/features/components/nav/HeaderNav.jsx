@@ -1,8 +1,15 @@
 import { Menu, Pause, Play, Plus, Settings } from "lucide-react";
 import { useAddURLDialog } from "../../../context/hooks/useAddURLDialog";
+import { useDownloadData } from "../../../context/hooks/use";
 
 export const HeaderNav = ({ setShowSidePanel }) => {
   const { openURLDialog } = useAddURLDialog();
+
+  const { urlQueue } = useDownloadData();
+  const btnClicked = () => {
+    console.log("Hello");
+    console.log(urlQueue);
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/70 dark:border-gray-700/70">
@@ -26,7 +33,7 @@ export const HeaderNav = ({ setShowSidePanel }) => {
               onClick={openURLDialog}
               primary
             />
-            <NavCustomButton name="Pause All" icon={Pause} />
+            <NavCustomButton name="Pause All" icon={Pause} onClick={btnClicked} />
             <NavCustomButton name="Resume All" icon={Play} />
           </div>
 

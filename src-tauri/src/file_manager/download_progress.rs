@@ -8,6 +8,7 @@ use tokio::process::Command;
 
 #[derive(Clone, Serialize)]
 struct DownloadProgress {
+    id: String,
     percent: f32,
     downloaded: String,
     total: String,
@@ -17,6 +18,7 @@ struct DownloadProgress {
 
 #[derive(Clone, Serialize)]
 struct DownloadLog {
+    id: String,
     line: String,
     stream: String, // "stdout" | "stderr"
 }
@@ -57,6 +59,7 @@ fn resolve_executable(name: &str) -> Result<String, String> {
 #[tauri::command]
 pub async fn download_video(
     window: Window,
+    id: String,
     url: String,
     output_path: String,
 ) -> Result<(), String> {
@@ -100,15 +103,17 @@ pub async fn download_video(
 
     // Stream stdout: parse progress
     let win_out = window.clone();
+    let id_out = id.clone();
     tokio::spawn(async move {
         let mut lines = BufReader::new(stdout).lines();
         while let Ok(Some(line)) = lines.next_line().await {
-            println!("[yt-dlp stdout] {line}");
+            // println!("[yt-dlp stdout] {line}");
             if let Some(caps) = PROGRESS_RE.captures(&line) {
                 let percent = caps["pct"].parse::<f32>().unwrap_or(0.0).clamp(0.0, 100.0);
                 let _ = win_out.emit(
                     "download-progress",
                     DownloadProgress {
+                        id: id_out.clone(),
                         percent,
                         downloaded: caps["dl"].to_string(),
                         total: caps["total"].to_string(),
@@ -117,18 +122,19 @@ pub async fn download_video(
                     },
                 );
             }
-            let _ = win_out.emit("download-log", DownloadLog { line, stream: "stdout".into() });
+            let _ = win_out.emit("download-log", DownloadLog { id: id_out.clone(), line, stream: "stdout".into() });
         }
     });
 
     // Stream stderr LIVE so you actually see failures as they happen,
     // not only after the whole process exits.
     let win_err = window.clone();
+    let id_out = id.clone();
     tokio::spawn(async move {
         let mut lines = BufReader::new(stderr).lines();
         while let Ok(Some(line)) = lines.next_line().await {
             eprintln!("[yt-dlp stderr] {line}");
-            let _ = win_err.emit("download-log", DownloadLog { line, stream: "stderr".into() });
+            let _ = win_err.emit("download-log", DownloadLog { id: id_out.clone(), line, stream: "stderr".into() });
         }
     });
 
@@ -144,6 +150,6 @@ pub async fn download_video(
         ));
     }
 
-    let _ = window.emit("download-complete", ());
+    let _ = window.emit("download-complete", id.clone());
     Ok(())
 }

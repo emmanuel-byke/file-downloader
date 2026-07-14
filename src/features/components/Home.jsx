@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HeaderNav } from "./nav/HeaderNav";
 import { SideNav } from "./nav/SideNav";
 import { FileWriter } from "./Files/FileWriter";
 import { TestCard } from "./TestCard";
+import { useDownloadData } from "../../context/hooks/use";
 
 export const Home = () => {
   const [showSidePanel, setShowSidePanel] = useState(true);
-  console.log('Hello');
+  const { urlQueue } = useDownloadData();
+
+  useEffect(()=>{
+    console.log( urlQueue );
+
+  }, [urlQueue])
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -31,9 +37,17 @@ export const Home = () => {
 
         {/* Main content – fills remaining space */}
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">
-          <div className="max-w-6xl mx-auto">
+          {/* <div className="max-w-6xl mx-auto">
             <TestCard />
-          </div>
+          </div> */}
+
+          {
+            // urlQueue.map((details, indx)=>(
+            //   <div className="max-w-6xl mx-auto">
+            //     <FileWriter />
+            //   </div>
+            // ))
+          }
 
           <div className="max-w-6xl mx-auto">
             <FileWriter />

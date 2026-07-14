@@ -8,12 +8,8 @@ pub async fn get_file_info(url: String) -> Result<serde_json::Value, String> {
         .output()
         .map_err(|e| e.to_string())?;
 
-    // let output2 = std::process::Command::new("yt-dlp")
-    //     .args(["-j", "--no-warnings", &url])
-    //     .output()
-    //     .map_err(|e| e.to_string())?;
-    // println!("{:?}", output2);
-
+    println!("{:?}", &output);
+    
     if !output.status.success() {
         return Err(String::from_utf8_lossy(&output.stderr).to_string());
     }

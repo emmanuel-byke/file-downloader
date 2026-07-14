@@ -1,7 +1,10 @@
 // components/AddURL.jsx
 import { Folder, X } from 'lucide-react';
 import { useState } from 'react';
+
+import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { useDownloadData } from '../../context/hooks/use';
 
 export const AddURL = () => {
   const [url, setUrl] = useState('');
@@ -10,27 +13,20 @@ export const AddURL = () => {
   const [mode, setMode] = useState('url');
   const [rememberPath, setRememberPath] = useState(false);
   const [category, setCategory] = useState('');
-
   const categories = ['Software', 'Movie', 'Music', 'Pictures', 'Compressed', 'Others'];
+
+  const { addUrlToQueue } = useDownloadData();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // 1. Perform your save logic here (e.g., send to backend)
-    console.log('URL submitted:', { url, name, saveTo, mode, rememberPath, category });
-    
-    // 2. Safely close the window after processing
+    addUrlToQueue(url);
     await closeWindow(); 
   };
 
   const closeWindow = async () => {
     try {
-      // If you are on Tauri v2:
       const currentWindow = getCurrentWindow();
       await currentWindow.close();
-
-      // If you are on Tauri v1, uncomment the line below instead:
-      // await appWindow.close();
     } catch (error) {
       console.error('Failed to close window:', error);
     }
@@ -172,7 +168,7 @@ export const AddURL = () => {
             type="submit"
             className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition"
           >
-            Save
+            Add URL
           </button>
         </div>
       </form>

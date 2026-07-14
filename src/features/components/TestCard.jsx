@@ -9,8 +9,12 @@ export const TestCard = () => {
     
     const [textInput, setTextInput] = useState("");
     const { settings, commandOptions } = useFileManagerData();
-    const { fileInfo, getFileInfo, downloadVideo, progress, error } = useDownloadData();
+    const { getFileInfo, downloadVideo, downloads } = useDownloadData();
     const [text, setText] = useState("Init...");
+
+    const [downloadID, setDownloadID] = useState("");
+
+    console.log(downloads[downloadID]);
 
     const submit = async() => {
         // const result = await invoke("button_clicked");
@@ -20,7 +24,10 @@ export const TestCard = () => {
         // setText(settings.name||"Hello");
         try {
           await getFileInfo(textInput);
-          await downloadVideo(textInput);
+          const id = await downloadVideo(textInput);
+
+          setDownloadID(id);
+
         } catch (err) {
           // already captured in `error` from context; nothing else to do here
         }
@@ -42,15 +49,15 @@ export const TestCard = () => {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {
-            fileInfo && 
-            <p className="text-md font-medium text-gray-800 ">
-              {fileInfo.title} — {fileInfo.filesize_approx} bytes
-            </p>
+            // fileInfo && 
+            // <p className="text-md font-medium text-gray-800 ">
+            //   {fileInfo.title} — {fileInfo.filesize_approx} bytes
+            // </p>
           }
           {
-            progress && 
+            downloads && Object.keys(downloads).length !== 0 && downloadID !== "" &&
             <p className="text-md font-medium text-gray-800 ">
-              {progress.percent}% — {progress.speed} — ETA {progress.eta}
+              {downloads[downloadID].percent}% — {downloads[downloadID].speed} — ETA {downloads[downloadID].eta}
             </p>
           }
         </div>

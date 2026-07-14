@@ -6,22 +6,30 @@ import { createContext, useContext, useEffect, useState } from "react";
 export const DownloadContext = createContext(null);
 
 export default function DownloadProvider({ children }) {
-  const [fileInfo, setFileInfo] = useState();
-  const [progress, setProgress] = useState(null);
-  const [error, setError] = useState(null);
-  const [logs, setLogs] = useState([]);
+
+  const [downloads, setDownloads] = useState({});
+  const [urlQueue, setUrlQueue] = useState({});
+  const [completedQueue, setCompletedQueue] = useState({});
 
   useEffect(() => {
-    const unlistenProgress = listen('download-progress', (e) => setProgress(e.payload));
-    const unlistenLog = listen('download-log', (e) =>
-      setLogs((prev) => [...prev.slice(-199), e.payload]) // keep last 200 lines
-    );
-    const unlistenComplete = listen('download-complete', () => setProgress(null));
-    return () => {
-      unlistenProgress.then(f => f());
-      unlistenLog.then(f => f());
-      unlistenComplete.then(f => f());
-    };
+    const unlistenProgress = listen('download-progress', (e) => {
+      const { id, ...progress } = e.payload;
+      setDownloads(prev => ({
+        ...prev,
+        [id]: { ...prev[id], progress }
+      }));
+    });
+
+    const unlistenComplete = listen('download-complete', (e) => {
+      const id = e.payload;
+      setDownloads(prev => ({
+        ...prev,
+        // [id]: { ...prev[id], status: 'complete', progress: null }
+        [id]: { ...prev[id], status: 'complete' }
+      }));
+    });
+
+    return () => { unlistenProgress.then(f => f()); unlistenComplete.then(f => f()); };
   }, []);
 
   async function getFileInfo(url) {
@@ -35,21 +43,37 @@ export default function DownloadProvider({ children }) {
   }
 
   async function downloadVideo(url) {
-    setError(null);
+    console.log("Downloading Started...")
+    const id = crypto.randomUUID();
+    setDownloads(prev => ({ ...prev, [id]: { url, status: 'starting' } }));
+
     try {
-      const dlDir = await downloadDir(); // resolves the real OS Downloads folder
-      const outputPath = `${dlDir}test/%(title)s.%(ext)s`;
-      return await invoke("download_video", { url, outputPath });
+      
+      await invoke("download_video", { id, url, outputPath });
     } catch (err) {
-      console.error("download_video failed:", err);
-      setError(String(err));
-      throw err;
+      setDownloads(prev => ({ ...prev, [id]: { ...prev[id], status: 'error', error: String(err) } }));
     }
+    return id;
+  }
+
+  const addUrlToQueue = async(url) => {
+    console.log("Adding it now...");
+
+    const fileInfo = await getFileInfo(url);
+    // const fileInfo = {};
+    const dlDir = await downloadDir();
+    const outputPath = `${dlDir}/AYDM/Video/%(title)s.%(ext)s`;
+    setUrlQueue(prev => ({
+      ...prev,
+      [url]: { fileInfo, status: "waiting", outputPath }
+    }));
+
+    console.log(urlQueue);
   }
 
   return (
     <DownloadContext.Provider
-      value={{ fileInfo, getFileInfo, downloadVideo, progress, error, logs }}
+      value={{ getFileInfo, downloadVideo, addUrlToQueue, urlQueue }}
     >
       {children}
     </DownloadContext.Provider>
