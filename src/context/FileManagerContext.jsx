@@ -41,7 +41,7 @@ export default function FileManagerProvider({ children }) {
   return (
     <FileManagerContext.Provider
         value={{
-          changeJSON, settings, commandOptions, setCommandOptions
+          changeJSON, loadJSON, settings, commandOptions, setCommandOptions
       }}
     >
       {children}

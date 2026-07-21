@@ -1,15 +1,27 @@
-import { Menu, Pause, Play, Plus, Settings } from "lucide-react";
+import { Home, Menu, Pause, Play, PlayCircle, Plus, Settings, Settings2 } from "lucide-react";
 import { useAddURLDialog } from "../../../context/hooks/useAddURLDialog";
-import { useDownloadData } from "../../../context/hooks/use";
+import { useDownloadData, usePrivancyData, useVariableData } from "../../../context/hooks/use";
 import { AddUrlBtn } from "../../cards/AddUrlBtn";
+import { useState } from "react";
+import { dispStr } from "../../../logic/display";
 
 export const HeaderNav = ({ setShowSidePanel }) => {
   const { openURLDialog } = useAddURLDialog();
+  const { dispMode, setDispMode } = useVariableData();
+  const { createAccount, login } = usePrivancyData();
 
   const { urlQueue } = useDownloadData();
-  const btnClicked = () => {
-    console.log("Hello");
-    console.log(urlQueue);
+
+  const btnClicked = async() => {
+    // console.log("Hello");
+    // console.log(urlQueue);
+    // createAccount('James', '1234');
+
+    const result = await login('Emmanuel', '1234');
+    console.log(result);
+  }
+  const toggleDispMode = () => {
+    setDispMode(prev=>prev==='home'?'settings':'home');
   }
 
   return (
@@ -29,6 +41,7 @@ export const HeaderNav = ({ setShowSidePanel }) => {
           {/* Center – Action buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
             <AddUrlBtn />
+            <NavCustomButton name="Start" icon={PlayCircle} onClick={btnClicked} />
             <NavCustomButton name="Pause All" icon={Pause} onClick={btnClicked} />
             <NavCustomButton name="Resume All" icon={Play} />
           </div>
@@ -36,9 +49,10 @@ export const HeaderNav = ({ setShowSidePanel }) => {
           {/* Right – Settings */}
           <div className="flex items-center">
             <NavCustomButton
-              name="Settings"
-              icon={Settings}
+              name={dispStr(dispMode)}
+              icon={dispMode==='settings'?Settings2:Home}
               aria-label="Open settings"
+              onClick={toggleDispMode}
             />
           </div>
         </div>

@@ -2,9 +2,11 @@ import { CircleCheck, Clock, File, Menu, Music, Notebook, Pause, Play, Plus, Set
 import { useState } from "react";
 import { BiMovie } from "react-icons/bi";
 import { CgSoftwareDownload } from "react-icons/cg";
+import { useVariableData } from "../../../context/hooks/use";
 
 export const SideNav = ({ showSidePanel, setShowSidePanel }) => {
   const [currentTask, setCurrentTask] = useState(1);
+  const { dispMode, setDispMode } = useVariableData();
   const tasks = [
     { Icon: Notebook, name: 'All', id: 1 },
     { Icon: Play, name: 'Running', id: 2 },
@@ -42,9 +44,12 @@ export const SideNav = ({ showSidePanel, setShowSidePanel }) => {
 
       {/* Optional footer / user section */}
       <div className="pt-4 border-t border-gray-200">
-        <button className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+        <button 
+          className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+          onClick={()=>setDispMode('privancy')}
+        >
           <Settings className="w-4 h-4" />
-          <span>Settings</span>
+          <span>Privancy</span>
         </button>
       </div>
     </nav>

@@ -3,11 +3,13 @@ import { HeaderNav } from "./nav/HeaderNav";
 import { SideNav } from "./nav/SideNav";
 import { FileWriter } from "./Files/FileWriter";
 import { TestCard } from "./TestCard";
-import { useDownloadData } from "../../context/hooks/use";
+import { useDownloadData, useVariableData } from "../../context/hooks/use";
+import LoginPage from "../modes/Login";
 
 export const Home = () => {
   const [showSidePanel, setShowSidePanel] = useState(true);
   const { urlQueue } = useDownloadData();
+  const { dispMode } = useVariableData();
 
   useEffect(()=>{
     console.log( urlQueue );
@@ -41,15 +43,16 @@ export const Home = () => {
             <TestCard />
           </div> */}
           {
-            Object.entries(urlQueue).map(([url, fileDetail])=>(
-              <div key={url} className="max-w-6xl mx-auto">
-                <FileWriter url={url} fileDetail={fileDetail} />
-              </div>
-            ))
+            // dispMode==='settings'?
+            // <div>Settings</div>:
+            // Object.entries(urlQueue).map(([url, fileDetail])=>(
+            //   <div key={url} className="max-w-6xl mx-auto">
+            //     <FileWriter url={url} fileDetail={fileDetail} />
+            //   </div>
+            // ))
+
           }
-          {/* <div className="max-w-6xl mx-auto">
-            <FileWriter />
-          </div> */}
+          <LoginPage />
 
 
         </main>
